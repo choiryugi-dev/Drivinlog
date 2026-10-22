@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#07120D" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="D-rive" />
+
+<!-- ===== GANTI https://d-rive.com DENGAN DOMAINMU (2 tempat: og:url & canonical) ===== -->
+<title>D-rive — catatan berkendara bensin & EV</title>
+<meta name="description" content="Catat perjalanan mobil bensin & listrik: jarak sekali isi/charge, rute pemberhentian, waktu tempuh, efisiensi km/L & km/kWh, dan biaya per km. Gratis, jalan offline." />
+<link rel="canonical" href="https://d-rive.com/" />
+<meta name="robots" content="index,follow" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="D-rive" />
+<meta property="og:title" content="D-rive — catatan berkendara bensin & EV" />
+<meta property="og:description" content="Jarak sekali isi/charge, rute, waktu tempuh, efisiensi & biaya per km. Buka di HP, pasang sebagai app, jalan offline." />
+<meta property="og:url" content="https://d-rive.com/" />
+<meta property="og:image" content="https://d-rive.com/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="D-rive — catatan berkendara bensin & EV" />
+<meta name="twitter:description" content="Jarak sekali isi/charge, rute, waktu tempuh, efisiensi & biaya per km." />
+<meta name="twitter:image" content="https://d-rive.com/og.png" />
+
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" type="image/png" href="icon-192.png" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#07120D; --panel:#0E1F17; --panel2:#15291F; --line:#20362B;
+  --text:#E7F2EB; --muted:#7C978A;
+  --emerald:#2FE0B0; --leaf:#8ED164; --deep:#064E3B;
+  --gold:#F2B441; --danger:#F0603E; --accent:#2FE0B0;
+}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;
+  background:radial-gradient(130% 55% at 50% -12%, #0c3b2b88 0%, transparent 60%), var(--bg);}
+header{display:flex;align-items:center;justify-content:space-between;padding:calc(16px + env(safe-area-inset-top)) 18px 10px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,var(--emerald),var(--deep));display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 0 16px -2px var(--emerald);}
+.brand h1{font-family:'Space Grotesk';font-size:20px;font-weight:700;letter-spacing:.02em;}
+.brand small{color:var(--muted);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;display:block;margin-top:-2px;}
+.hbtns{display:flex;align-items:center;gap:8px;}
+.veh-pill{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);padding:6px 11px 6px 7px;border-radius:999px;font-size:12.5px;font-weight:600;max-width:150px;cursor:pointer;}
+.veh-pill .av{width:22px;height:22px;border-radius:50%;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;flex:none;}
+.veh-pill .av img{width:100%;height:100%;object-fit:cover;}
+.veh-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.gear{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;}
+main{flex:1;padding:6px 16px 100px;}
+.section-t{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:22px 4px 10px;font-weight:600;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;}
+.card+.card{margin-top:12px;}
+.dial-card{display:flex;flex-direction:column;align-items:center;padding:20px 16px 18px;background:linear-gradient(180deg,var(--panel) 0%, #0b1a13 100%);}
+.tag{font-size:10px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
+.dial{position:relative;width:236px;height:236px;}
+.dial .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.dial .big{font-family:'JetBrains Mono';font-size:47px;font-weight:700;line-height:1;letter-spacing:-.02em;}
+.dial .unit{font-size:11px;color:var(--muted);letter-spacing:.22em;margin-top:6px;text-transform:uppercase;}
+.dial .sub{font-size:12.5px;color:var(--muted);margin-top:10px;text-align:center;padding:0 12px;}
+.dial .sub b{color:var(--accent);font-family:'JetBrains Mono';}
+.fill-loc{font-size:12.5px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:6px;}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:filter .15s,transform .05s;}
+.btn:active{transform:scale(.985);}
+.btn-go{background:var(--accent);color:#04140d;}
+.btn-go:hover{filter:brightness(1.07);}
+.btn-warn{background:var(--gold);color:#241a02;}
+.btn-stop{background:var(--danger);color:#fff;}
+.btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line);}
+.btn-row{display:flex;gap:10px;margin-top:12px;}
+.btn-sm{padding:12px;font-size:13.5px;border-radius:12px;}
+.timer{text-align:center;padding:10px 0 6px;}
+.timer .t{font-family:'JetBrains Mono';font-size:38px;font-weight:700;letter-spacing:.02em;}
+.timer .lbl{color:var(--muted);font-size:10px;letter-spacing:.2em;text-transform:uppercase;}
+.timer .sub2{color:var(--muted);font-size:12.5px;margin-top:6px;}
+.timer .sub2 b{color:var(--text);font-family:'JetBrains Mono';}
+.gps-line{font-size:11.5px;color:var(--emerald);margin-top:4px;font-family:'JetBrains Mono';}
+.gps-err{font-size:11.5px;color:var(--gold);margin-top:4px;}
+.paused-flag{display:inline-flex;align-items:center;gap:6px;background:#f2b4411a;color:var(--gold);font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;margin-bottom:8px;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 12px;}
+.stat .v{font-family:'JetBrains Mono';font-size:20px;font-weight:700;}
+.stat .k{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;}
+.eff-row{display:flex;gap:10px;margin-top:12px;}
+.eff{flex:1;background:var(--panel2);border-radius:12px;padding:11px 13px;}
+.eff .v{font-family:'JetBrains Mono';font-weight:700;font-size:16px;color:var(--accent);}
+.eff .k{font-size:10.5px;color:var(--muted);margin-top:2px;}
+.node{display:flex;gap:13px;}
+.node .rail{display:flex;flex-direction:column;align-items:center;width:26px;flex:none;}
+.marker{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:1.5px solid var(--line);flex:none;font-size:12px;}
+.marker.start{border-color:var(--accent);color:var(--accent);}
+.marker.stop{border-color:var(--gold);}
+.marker.dest{border-color:var(--text);}
+.rail .line{width:2px;flex:1;min-height:22px;background:var(--line);margin:2px 0;}
+.node .body{padding-bottom:15px;flex:1;min-width:0;}
+.node .place{font-weight:600;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node .place a{color:inherit;text-decoration:none;}
+.node .meta{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.node .leg{font-family:'JetBrains Mono';font-size:12px;color:var(--accent);margin-top:5px;}
+.sess-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.sess-total{font-family:'JetBrains Mono';font-size:26px;font-weight:700;}
+.sess-total small{font-size:13px;color:var(--muted);font-weight:500;}
+.bar{height:7px;border-radius:4px;background:var(--panel2);overflow:hidden;margin-top:10px;}
+.bar i{display:block;height:100%;border-radius:4px;transition:width .5s;}
+.open-tag{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border-radius:999px;padding:6px 11px;font-size:11.5px;color:var(--muted);font-weight:500;}
+.chip b{color:var(--text);font-family:'JetBrains Mono';}
+.mapwrap{margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--panel2);}
+.mapwrap iframe{width:100%;height:170px;border:0;display:block;filter:saturate(.85);}
+.maplink{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13.5px;font-weight:600;color:var(--emerald);text-decoration:none;margin-top:10px;}
+.vrow{display:flex;align-items:center;gap:12px;}
+.vrow .ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:var(--panel2);flex:none;font-size:24px;overflow:hidden;}
+.vrow .ic img{width:100%;height:100%;object-fit:cover;}
+.vrow .info{flex:1;min-width:0;cursor:pointer;}
+.vrow .info .n{font-weight:600;font-size:15px;}
+.vrow .info .d{font-size:12px;color:var(--muted);margin-top:2px;}
+.vrow .act{display:flex;gap:6px;}
+.iconbtn{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;}
+.iconbtn:hover{color:var(--text);}
+.active-mark{font-size:9.5px;font-weight:700;letter-spacing:.1em;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 6px;}
+.empty{text-align:center;padding:34px 20px;color:var(--muted);}
+.empty .ico{font-size:34px;opacity:.6;margin-bottom:10px;}
+.empty p{font-size:14px;line-height:1.5;max-width:270px;margin:0 auto;}
+nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);background:#091510ee;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);}
+nav button{font-size:10px !important;}
+nav button{background:none;border:none;color:var(--muted);padding:11px 0 13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;font-size:10.5px;font-weight:500;}
+nav button.on{color:var(--accent);}
+nav button svg{width:21px;height:21px;}
+.svg-i{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.overlay{position:fixed;inset:0;background:#030806cc;display:flex;align-items:flex-end;justify-content:center;z-index:50;}
+.sheet{background:var(--panel);width:100%;max-width:480px;border-radius:22px 22px 0 0;border-top:1px solid var(--line);padding:20px 18px calc(24px + env(safe-area-inset-bottom));max-height:90vh;overflow-y:auto;animation:up .22s ease;}
+@keyframes up{from{transform:translateY(28px);opacity:.6;}to{transform:translateY(0);opacity:1;}}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sheet-h h3{font-family:'Space Grotesk';font-size:18px;font-weight:600;}
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500;}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:13px;color:var(--text);font-size:15px;font-family:inherit;}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--accent);}
+.field.mono input{font-family:'JetBrains Mono';}
+.seg{display:flex;gap:8px;}
+.seg button{flex:1;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--muted);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;}
+.seg button.on-ev{border-color:var(--emerald);color:var(--emerald);background:#2fe0b016;}
+.seg button.on-ice{border-color:var(--leaf);color:var(--leaf);background:#8ed16416;}
+.seg button.on{border-color:var(--accent);color:var(--accent);background:#2fe0b016;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.hint{font-size:11.5px;color:var(--muted);margin:-4px 0 13px;line-height:1.45;}
+.iconpick{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:12px;}
+.iconpick button{aspect-ratio:1;border:1px solid var(--line);background:var(--bg);border-radius:10px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.iconpick button.on{border-color:var(--accent);background:#2fe0b016;}
+.catpick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.catpick button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;font-size:10.5px;color:var(--muted);}
+.catpick button .e{font-size:20px;}
+.catpick button.on{border-color:var(--accent);color:var(--text);background:#2fe0b012;}
+.link-btn{color:var(--emerald);background:none;border:none;font-family:inherit;font-size:13.5px;cursor:pointer;padding:0;}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<div id="modal-root"></div>
+<script>
+/* ===================== i18n ===================== */
+const L={
+id:{tagline:'catatan berkendara',home:'Beranda',sessions:'Sesi',history:'Riwayat',garage:'Garasi',
+ home_empty:'Belum ada kendaraan. Tambahkan mobil pertamamu untuk mulai mencatat.',add_vehicle:'Tambah kendaraan',
+ since_charge:'sejak charge terakhir',since_fill:'sejak isi terakhir',no_session:'belum ada sesi',
+ charge_soon:'segera charge',fill_soon:'segera isi',session_running:'sesi berjalan',
+ hint_charge:'mulai dengan catat charge',hint_fill:'mulai dengan catat isi',
+ drive_time:'waktu jalan',total:'total',from:'dari',stopped:'Berhenti',at:'di',
+ start_driving:'Mulai berkendara',log_charge:'Catat charge',log_fuel:'Isi bensin',make_stop:'Mampir',resume:'Lanjut jalan',finish:'Selesai',
+ this_month:'Bulan ini',km:'km',cost:'biaya',trips:'trip',last:'terakhir',cost_km:'biaya / km',
+ new_charge:'Catat charge baru',new_fill:'Catat isi bensin baru',pick_vehicle:'Pilih kendaraan dulu di tab Garasi.',
+ no_sessions:'Belum ada sesi. Catat isi/charge untuk mulai menghitung jarak sekali isi.',
+ running:'Berjalan',done:'Selesai',no_trips_sess:'Belum ada perjalanan di sesi ini.',
+ nav_route:'Navigasi rute di Google Maps',show_map:'Lihat peta ▾',no_map:'Belum ada lokasi untuk dipetakan.',
+ charge_point:'Titik charge',fill_point:'Titik isi bensin',destination:'Tujuan',stopover:'mampir',
+ no_trips:'Belum ada perjalanan. Tekan Mulai berkendara di Beranda.',stops:'mampir',kmh:'km/j',
+ petrol:'Bensin',ev:'EV',per_charge:'km/charge',per_tank:'km/tangki',total_lbl:'total',active:'AKTIF',
+ v_add:'Tambah kendaraan',v_edit:'Ubah kendaraan',v_type:'Jenis',v_elec:'Listrik (EV)',v_petrol:'Bensin',
+ v_brand:'Merek',v_model:'Tipe',v_range_ev:'Jarak per charge penuh (km)',v_range_ice:'Estimasi jarak per tangki (km) — opsional',
+ v_icon:'Ikon mobil',v_img:'Atau tempel URL foto mobil (opsional)',v_img_hint:'Foto dari internet jadi ikon bulat kecil. Butuh koneksi untuk memuatnya; kalau kosong, dipakai emoji di atas.',save:'Simpan',
+ f_charge:'Catat charge',f_fill:'Catat isi bensin',f_loc:'Lokasi',f_kwh:'Energi (kWh)',f_pct:'Terisi ke (%)',f_liter:'Volume (liter)',f_cost:'Biaya (Rp)',
+ f_hint_ev:'Sesi baru dimulai dari sini. Semua perjalanan berikutnya dijumlahkan sampai kamu charge lagi — plus efisiensi km/kWh & biaya per km otomatis.',
+ f_hint_ice:'Sesi baru dimulai dari sini. Semua perjalanan berikutnya dijumlahkan sampai kamu isi lagi — plus efisiensi km/L & biaya per km otomatis.',
+ f_start:'Mulai sesi baru',
+ s_title:'Mulai berkendara',s_from:'Titik berangkat',s_hint:'Waktu tempuh dihitung mulai sekarang. Tekan Mampir kapan pun untuk menjeda waktu jalan & mencatat tempat pemberhentian.',s_go:'Berangkat',
+ s_range:'Sisa range saat ini',s_range_km:'km',s_range_pct:'%',s_range_hint:'Opsional. Dibandingkan dengan range saat tiba untuk hitung konsumsi nyata (km per 1% / per km range).',
+ e_range:'Sisa range saat tiba',rangedrop:'range turun',used_per:'konsumsi',st_consumption:'Konsumsi nyata',st_consumption_sub:'range turun vs jarak nyata',
+ mp_title:'Mampir',mp_where:'Mampir ke mana?',mp_type:'Jenis tempat',mp_note:'Catatan (opsional)',mp_hint:'Waktu jalan dijeda dan tempat ini masuk sebagai titik mampir di rute.',mp_btn:'Jeda & catat mampir',
+ e_title:'Selesai berkendara',e_dest:'Tujuan / titik berhenti akhir',e_dist:'Jarak tempuh (km)',e_gps:'≈ terukur dari GPS, boleh dikoreksi',e_purpose:'Keperluan',pur_personal:'Pribadi',pur_work:'Kerja',pur_kos:'Bisnis kos',e_save:'Simpan perjalanan',
+ set_title:'Pengaturan',cars:'mobil',set_lang:'Bahasa',set_gps:'Ukur jarak via GPS',set_gps_hint:'Saat berkendara, jarak dihitung dari lokasi HP dan otomatis mengisi kolom jarak. Butuh izin lokasi, HTTPS, dan layar menyala. Tanpa ini, jarak diisi manual.',
+ set_csv:'Ekspor perjalanan (CSV)',set_backup:'Cadangkan semua (JSON)',set_restore:'Pulihkan dari file JSON',set_wipe:'Hapus semua data',
+ set_hint:'Data tersimpan di perangkat ini. CSV untuk laporan; JSON untuk pindah perangkat.',
+ restored:'Data berhasil dipulihkan.',invalid:'File tidak valid.',
+ c_del_v:'Hapus kendaraan ini beserta riwayatnya?',c_del_s:'Hapus sesi ini dan semua perjalanannya?',c_wipe:'Hapus SEMUA data D-rive? Tidak bisa dibatalkan.',
+ gps_on:'GPS aktif',gps_denied:'Izin lokasi ditolak — jarak diisi manual.',gps_na:'GPS tidak tersedia di perangkat ini.',via_gps:'via GPS',
+ f_date:'Tanggal & jam pengisian',stats:'Statistik',odometer:'odometer',
+ st_lifetime:'Sepanjang waktu',st_realrange:'Jangkauan nyata',st_realrange_sub:'rata-rata sekali isi penuh',st_claimed:'klaim',
+ st_avg_eff:'Efisiensi rata-rata',st_best:'Terbaik',st_worst:'Terburuk',st_eff_trend:'Tren efisiensi per sesi',st_month_cost:'Biaya 6 bulan terakhir',st_time:'waktu',
+ st_none:'Belum cukup data. Catat beberapa sesi & perjalanan dulu.',
+ rem_title:'Pengingat',rem_service:'Servis',rem_tax:'Pajak / STNK',rem_overdue:'terlewat',rem_in:'dalam',rem_days:'hari',rem_tap:'ketuk untuk atur',
+ v_more:'Pengingat & odometer (opsional)',v_odo:'Odometer saat ini (km)',v_service_km:'Servis berikutnya di (km)',v_service_date:'Servis berikutnya (tanggal)',v_tax_date:'Pajak/STNK berikutnya (tanggal)',
+ e_extra:'Biaya parkir (Rp) — opsional',
+ toll:'Tol',log_toll:'Catat tol',toll_gate:'Gerbang tol (opsional)',toll_amount:'Tarif (Rp)',toll_added:'tol tercatat',toll_total:'Total tol',e_toll:'Biaya tol (Rp)',toll_hint:'Tercatat tanpa menjeda perjalanan. Semua tol trip ini dijumlahkan otomatis.',toll_save:'Simpan tol',no_amount:'Isi tarifnya dulu.'},
+en:{tagline:'driving log',home:'Home',sessions:'Sessions',history:'History',garage:'Garage',
+ home_empty:'No vehicle yet. Add your first car to start logging.',add_vehicle:'Add vehicle',
+ since_charge:'since last charge',since_fill:'since last fill',no_session:'no active session',
+ charge_soon:'charge soon',fill_soon:'refuel soon',session_running:'session running',
+ hint_charge:'start by logging a charge',hint_fill:'start by logging a fill',
+ drive_time:'drive time',total:'total',from:'from',stopped:'Stopped',at:'at',
+ start_driving:'Start driving',log_charge:'Log charge',log_fuel:'Log fuel',make_stop:'Make a stop',resume:'Resume',finish:'Finish',
+ this_month:'This month',km:'km',cost:'cost',trips:'trips',last:'last',cost_km:'cost / km',
+ new_charge:'New charge',new_fill:'New fill',pick_vehicle:'Pick a vehicle in the Garage tab first.',
+ no_sessions:'No sessions yet. Log a fill/charge to start measuring distance per fill.',
+ running:'Running',done:'Done',no_trips_sess:'No trips in this session yet.',
+ nav_route:'Navigate route in Google Maps',show_map:'Show map ▾',no_map:'No location to map yet.',
+ charge_point:'Charge point',fill_point:'Fill point',destination:'Destination',stopover:'stop',
+ no_trips:'No trips yet. Tap Start driving on Home.',stops:'stops',kmh:'km/h',
+ petrol:'Petrol',ev:'EV',per_charge:'km/charge',per_tank:'km/tank',total_lbl:'total',active:'ACTIVE',
+ v_add:'Add vehicle',v_edit:'Edit vehicle',v_type:'Type',v_elec:'Electric (EV)',v_petrol:'Petrol',
+ v_brand:'Brand',v_model:'Model',v_range_ev:'Range on a full charge (km)',v_range_ice:'Est. range per full tank (km) — optional',
+ v_icon:'Car icon',v_img:'Or paste a car photo URL (optional)',v_img_hint:'An internet photo becomes a small round icon. Needs a connection to load; if empty, the emoji above is used.',save:'Save',
+ f_charge:'Log charge',f_fill:'Log fuel',f_loc:'Location',f_kwh:'Energy (kWh)',f_pct:'Charged to (%)',f_liter:'Volume (liters)',f_cost:'Cost (Rp)',
+ f_hint_ev:'A new session starts here. Every trip after is summed until you charge again — with km/kWh efficiency & cost per km computed automatically.',
+ f_hint_ice:'A new session starts here. Every trip after is summed until you refuel again — with km/L efficiency & cost per km computed automatically.',
+ f_start:'Start new session',
+ s_title:'Start driving',s_from:'Starting point',s_hint:'Travel time starts now. Tap Make a stop anytime to pause drive time & log the stop.',s_go:'Go',
+ s_range:'Range left now',s_range_km:'km',s_range_pct:'%',s_range_hint:'Optional. Compared with range on arrival to compute real consumption (km per 1% / per range-km).',
+ e_range:'Range left on arrival',rangedrop:'range drop',used_per:'used',st_consumption:'Real consumption',st_consumption_sub:'range drop vs actual distance',
+ mp_title:'Make a stop',mp_where:'Where did you stop?',mp_type:'Place type',mp_note:'Note (optional)',mp_hint:'Drive time pauses and this place is added as a stop on the route.',mp_btn:'Pause & log stop',
+ e_title:'Finish driving',e_dest:'Destination / final stop',e_dist:'Distance (km)',e_gps:'≈ measured by GPS, you can correct it',e_purpose:'Purpose',pur_personal:'Personal',pur_work:'Work',pur_kos:'Kos business',e_save:'Save trip',
+ set_title:'Settings',cars:'cars',set_lang:'Language',set_gps:'Measure distance via GPS',set_gps_hint:'While driving, distance is computed from your phone location and auto-fills the distance field. Needs location permission, HTTPS, and the screen on. Without it, distance is entered manually.',
+ set_csv:'Export trips (CSV)',set_backup:'Back up all (JSON)',set_restore:'Restore from JSON',set_wipe:'Delete all data',
+ set_hint:'Data is stored on this device. CSV for reports; JSON to move devices.',
+ restored:'Data restored.',invalid:'Invalid file.',
+ c_del_v:'Delete this vehicle and its history?',c_del_s:'Delete this session and all its trips?',c_wipe:'Delete ALL D-rive data? This cannot be undone.',
+ gps_on:'GPS on',gps_denied:'Location denied — distance entered manually.',gps_na:'GPS not available on this device.',via_gps:'via GPS',
+ f_date:'Fill date & time',stats:'Stats',odometer:'odometer',
+ st_lifetime:'All time',st_realrange:'Real-world range',st_realrange_sub:'avg per full fill',st_claimed:'claimed',
+ st_avg_eff:'Avg efficiency',st_best:'Best',st_worst:'Worst',st_eff_trend:'Efficiency per session',st_month_cost:'Cost, last 6 months',st_time:'time',
+ st_none:'Not enough data yet. Log a few sessions & trips first.',
+ rem_title:'Reminders',rem_service:'Service',rem_tax:'Tax / registration',rem_overdue:'overdue',rem_in:'in',rem_days:'days',rem_tap:'tap to set up',
+ v_more:'Reminders & odometer (optional)',v_odo:'Current odometer (km)',v_service_km:'Next service at (km)',v_service_date:'Next service (date)',v_tax_date:'Tax/registration due (date)',
+ e_extra:'Parking cost (Rp) — optional',
+ toll:'Toll',log_toll:'Log toll',toll_gate:'Toll gate (optional)',toll_amount:'Amount (Rp)',toll_added:'toll logged',toll_total:'Total toll',e_toll:'Toll cost (Rp)',toll_hint:'Logged without pausing the trip. All tolls on this trip are summed automatically.',toll_save:'Save toll',no_amount:'Enter the amount first.'}
+};
+let lang='id';
+const t=(k)=>L[lang][k]||L.id[k]||k;
+const loc=()=>lang==='id'?'id-ID':'en-GB';
+
+/* ===================== icons ===================== */
+const I={
+ gauge:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M12 14l4-4"/><circle cx="12" cy="14" r="8"/><path d="M2 14h2M20 14h2M12 4V2"/></svg>',
+ fuel:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M3 22V4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v18"/><path d="M2 22h13"/><path d="M14 8h2a2 2 0 0 1 2 2v6a2 2 0 0 0 2 2 2 2 0 0 0 2-2V9l-3-3"/><path d="M4 9h8"/></svg>',
+ zap:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>',
+ route:'<svg class="svg-i" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h6a3 3 0 0 0 3-3V8M6 16V8a3 3 0 0 1 3-3h6"/></svg>',
+ car:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M5 17H3v-5l2-5h14l2 5v5h-2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/><path d="M8 17h8"/></svg>',
+ plus:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+ play:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg>',
+ stop:'<svg class="svg-i" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
+ pause:'<svg class="svg-i" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>',
+ pin:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M12 21s-6-5.7-6-10a6 6 0 0 1 12 0c0 4.3-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg>',
+ trash:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
+ x:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+ clock:'<svg class="svg-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+ pencil:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M4 20h4L20 8l-4-4L4 16z"/></svg>',
+ gear:'<svg class="svg-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L4 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1L10.5 21h4l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg>',
+ nav:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M3 11l19-8-8 19-2-8z"/></svg>',
+ chev:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>',
+ chart:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="13" width="3" height="4"/></svg>',
+ bell:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+ toll:'<svg class="svg-i" viewBox="0 0 24 24"><path d="M4 21V10l8-5 8 5v11"/><path d="M4 21h16"/><path d="M9 21v-5a3 3 0 0 1 6 0v5"/></svg>'};
+const CAR_EMOJI=['🚗','🚙','🚕','🚘','🚖','🏎️','🚐','🛻','🚚','🚛','🚜','🚌','🚎','🚍','🚓','🚔','🚑','🚒','🏍️','🛵','🛺','🚲','🚁','🚤','⛽','🔌','🔋','⚡','🌿','🏁'];
+const CATS=[['food','🍽️','Makan','Food'],['shop','🛒','Belanja','Shopping'],['fuel','⛽','Isi · Charge','Fuel · Charge'],['rest','☕','Istirahat','Rest'],['pick','🧍','Jemput · Antar','Pick-up · Drop-off'],['toilet','🚻','Toilet','Restroom'],['work','💼','Kerja','Work'],['other','📍','Lainnya','Other']];
+const catOf=(k)=>CATS.find(c=>c[0]===k)||CATS[7];
+const catEmoji=(k)=>catOf(k)[1];
+const catLabel=(k)=>lang==='id'?catOf(k)[2]:catOf(k)[3];
+
+/* ===================== state ===================== */
+const KEY='drive:data:v1';
+let S={vehicles:[],sessions:[],trips:[],activeVehicleId:null,runningTrip:null,tab:'home',settings:{gps:false,lang:'id'}};
+let timerInt=null,gpsWatch=null;
+function load(){try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}if(!S.settings)S.settings={gps:false,lang:'id'};lang=S.settings.lang||'id';}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({vehicles:S.vehicles,sessions:S.sessions,trips:S.trips,activeVehicleId:S.activeVehicleId,runningTrip:S.runningTrip,settings:S.settings}));}catch(e){}}
+
+/* ===================== helpers ===================== */
+const uid=()=>Math.random().toString(36).slice(2,10);
+const esc=(s)=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=(s)=>{if(typeof s==='number')return s;if(!s)return NaN;return parseFloat(String(s).replace(',','.').replace(/[^0-9.]/g,''));};
+const fmtKm=(n)=>(+n||0).toLocaleString(loc(),{maximumFractionDigits:1});
+const fmtRp=(n)=>'Rp '+Math.round(+n||0).toLocaleString('id-ID');
+const fmtDur=(ms)=>{const m=Math.max(0,Math.round(ms/60000));const h=Math.floor(m/60);const H=lang==='id'?'j':'h';return h?h+H+' '+(m%60)+'m':m+'m';};
+const fmtClock=(ms)=>{const s=Math.max(0,Math.floor(ms/1000));const h=String(Math.floor(s/3600)).padStart(2,'0');const m=String(Math.floor(s%3600/60)).padStart(2,'0');const ss=String(s%60).padStart(2,'0');return h+':'+m+':'+ss;};
+const fmtDate=(x)=>new Date(x).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const vehicleById=(id)=>S.vehicles.find(v=>v.id===id)||null;
+const activeVehicle=()=>vehicleById(S.activeVehicleId);
+const isEV=(v)=>(v||activeVehicle())?.type==='ev';
+const accentOf=(v)=>((v||activeVehicle())?.type==='ev')?'var(--emerald)':'var(--leaf)';
+const activeSession=()=>S.sessions.filter(s=>s.vehicleId===S.activeVehicleId&&!s.closedAt).sort((a,b)=>b.startedAt-a.startedAt)[0]||null;
+const tripsOf=(sid)=>S.trips.filter(x=>x.sessionId===sid).sort((a,b)=>a.startedAt-b.startedAt);
+const distOf=(sid)=>tripsOf(sid).reduce((a,x)=>a+(+x.distanceKm||0),0);
+function vehAvatar(v,size){if(v&&v.img)return '<img src="'+esc(v.img)+'" alt="">';return '<span style="font-size:'+(size||'20px')+'">'+(v&&v.icon?v.icon:'🚗')+'</span>';}
+const mSearch=(q)=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+const mEmbed=(q)=>'https://maps.google.com/maps?q='+encodeURIComponent(q)+'&z=13&output=embed';
+function mDir(p){const a=p.filter(Boolean).map(encodeURIComponent);if(a.length<2)return a.length?mSearch(p.filter(Boolean)[0]):null;return 'https://www.google.com/maps/dir/'+a.join('/');}
+function sessionPlaces(s){const a=[];if(s.fillLocation)a.push(s.fillLocation);tripsOf(s.id).forEach(x=>{(x.waypoints||[]).forEach(w=>{if(w.name)a.push(w.name);});if(x.endLocation)a.push(x.endLocation);});return a;}
+function recentPlaces(){const set=new Set();S.sessions.forEach(s=>{if(s.fillLocation)set.add(s.fillLocation);});S.trips.forEach(x=>{if(x.startLocation)set.add(x.startLocation);if(x.endLocation)set.add(x.endLocation);(x.waypoints||[]).forEach(w=>{if(w.name)set.add(w.name);});});return [...set].slice(0,40);}
+function datalist(id){return '<datalist id="'+id+'">'+recentPlaces().map(p=>'<option value="'+esc(p)+'"></option>').join('')+'</datalist>';}
+function sessStats(s){const tr=tripsOf(s.id);const dist=tr.reduce((a,x)=>a+(+x.distanceKm||0),0);const time=tr.reduce((a,x)=>a+(x.movingMs||(x.endedAt-x.startedAt)),0);let eff=null,unit='',perKm=null;if(s.type==='ev'){if(s.kwh>0){eff=dist/s.kwh;unit='km/kWh';}}else{if(s.liters>0){eff=dist/s.liters;unit='km/L';}}if(s.cost>0&&dist>0)perKm=s.cost/dist;return {dist,time,eff,unit,perKm,count:tr.length};}
+function monthStats(){const d=new Date(),m=d.getMonth(),y=d.getFullYear();const tr=S.trips.filter(x=>{const z=new Date(x.startedAt);return z.getMonth()===m&&z.getFullYear()===y;});const km=tr.reduce((a,x)=>a+(+x.distanceKm||0),0);const fuel=S.sessions.filter(s=>{const z=new Date(s.startedAt);return z.getMonth()===m&&z.getFullYear()===y;}).reduce((a,s)=>a+(+s.cost||0),0);const extra=tr.reduce((a,x)=>a+(+x.extraCost||0)+(+x.tollCost||0),0);return {km,cost:fuel+extra,count:tr.length};}
+function currentOdo(v){const base=+v.odoBase||0;return base+S.trips.filter(x=>x.vehicleId===v.id).reduce((a,x)=>a+(+x.distanceKm||0),0);}
+function daysUntil(s){return Math.ceil((new Date(s+'T23:59:59').getTime()-Date.now())/86400000);}
+function vehReminders(v){if(!v)return [];const out=[];const odo=currentOdo(v);
+  if(v.serviceDate){const d=daysUntil(v.serviceDate);if(d<=30)out.push({k:'rem_service',over:d<0,detail:d<0?(t('rem_overdue')+' '+(-d)+' '+t('rem_days')):(t('rem_in')+' '+d+' '+t('rem_days'))});}
+  if(v.serviceKm){const left=(+v.serviceKm)-odo;if(left<=1000)out.push({k:'rem_service',over:left<0,detail:(left<0?t('rem_overdue'):t('rem_in')+' '+fmtKm(left)+' km')+' · @'+fmtKm(v.serviceKm)+' km'});}
+  if(v.taxDate){const d=daysUntil(v.taxDate);if(d<=30)out.push({k:'rem_tax',over:d<0,detail:d<0?(t('rem_overdue')+' '+(-d)+' '+t('rem_days')):(t('rem_in')+' '+d+' '+t('rem_days'))});}
+  return out;}
+function nowLocalInput(ts){const d=ts?new Date(ts):new Date();const p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());}
+function vehSessionsClosed(vid){return S.sessions.filter(s=>s.vehicleId===vid&&s.closedAt).map(s=>({s,st:sessStats(s)}));}
+function realRange(vid){const arr=vehSessionsClosed(vid).map(o=>o.st.dist).filter(d=>d>0);if(!arr.length)return null;return arr.reduce((a,b)=>a+b,0)/arr.length;}
+function effList(vid){return S.sessions.filter(s=>s.vehicleId===vid).map(s=>({s,st:sessStats(s)})).filter(o=>o.st.eff!=null);}
+function barChart(data,fmt){if(!data.length)return '';const max=Math.max(...data.map(d=>d.value),0.0001);const W=data.length*44,H=120,bw=26;let bars='';data.forEach((d,i)=>{const h=Math.max(3,Math.round(d.value/max*86));const x=i*44+9,y=H-20-h;bars+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="5" fill="'+(d.color||'var(--emerald)')+'"/>'+'<text x="'+(x+bw/2)+'" y="'+(y-5)+'" text-anchor="middle" font-size="10" fill="var(--text)" font-family="JetBrains Mono">'+fmt(d.value)+'</text>'+'<text x="'+(x+bw/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9.5" fill="var(--muted)">'+esc(d.label)+'</text>';});return '<div style="overflow-x:auto"><svg width="'+Math.max(W,280)+'" height="'+H+'" viewBox="0 0 '+Math.max(W,280)+' '+H+'">'+bars+'</svg></div>';}
+function trTimes(r){const now=Date.now();const total=now-r.startedAt;const paused=(r.pausedMs||0)+(r.pausedSince?now-r.pausedSince:0);return {total,paused,moving:total-paused};}
+
+/* ===================== GPS ===================== */
+function haversine(a,b){const R=6371000,toR=Math.PI/180;const dLat=(b.lat-a.lat)*toR,dLon=(b.lng-a.lng)*toR;const la1=a.lat*toR,la2=b.lat*toR;const h=Math.sin(dLat/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+function startGps(){
+  if(gpsWatch!=null||!S.runningTrip)return;
+  if(!('geolocation' in navigator)){S.runningTrip.gpsErr='na';render();return;}
+  S.runningTrip._last=null;
+  try{gpsWatch=navigator.geolocation.watchPosition((pos)=>{
+    const r=S.runningTrip;if(!r)return;
+    if(r.pausedSince){r._last=null;return;}
+    const acc=pos.coords.accuracy,cur={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    if(acc!=null&&acc>50)return;
+    if(r._last){const d=haversine(r._last,cur);if(d>=4&&d<=300){r.gpsKm=(r.gpsKm||0)+d/1000;save();}}
+    r._last=cur;
+  },(err)=>{const r=S.runningTrip;if(r){r.gpsErr=err.code===1?'denied':'err';render();}},{enableHighAccuracy:true,maximumAge:2000,timeout:12000});}catch(e){}
+}
+function stopGps(){if(gpsWatch!=null){try{navigator.geolocation.clearWatch(gpsWatch);}catch(e){}gpsWatch=null;}}
+
+/* ===================== dial ===================== */
+function dial(value,max,accent,sub){
+  const R=92,C=2*Math.PI*R,SW=0.72;const frac=max?Math.min(value/max,1):(value>0?0.06:0);
+  const over=max&&value>max,warn=max&&value/max>=0.85;const col=over?'var(--danger)':(warn?'var(--gold)':accent);
+  return '<div class="dial"><svg width="236" height="236" viewBox="0 0 236 236"><g transform="rotate(133.2 118 118)">'+
+    '<circle cx="118" cy="118" r="'+R+'" fill="none" stroke="#1c3327" stroke-width="15" stroke-linecap="round" stroke-dasharray="'+(SW*C)+' '+C+'"/>'+
+    '<circle cx="118" cy="118" r="'+R+'" fill="none" stroke="'+col+'" stroke-width="15" stroke-linecap="round" stroke-dasharray="'+(frac*SW*C)+' '+C+'" style="transition:stroke-dasharray .5s"/>'+
+    '</g></svg><div class="center"><div class="big mono">'+fmtKm(value)+'</div><div class="unit">KM</div>'+(sub?'<div class="sub">'+sub+'</div>':'')+'</div></div>';
+}
+
+/* ===================== views ===================== */
+function viewHome(){
+  const v=activeVehicle();
+  if(!v)return '<div class="empty" style="margin-top:40px"><div class="ico">🚗</div><p>'+t('home_empty')+'</p><button class="btn btn-go" style="max-width:230px;margin:18px auto 0" data-act="add-vehicle">'+I.plus+' '+t('add_vehicle')+'</button></div>';
+  const ev=isEV(v),acc=accentOf(v),sess=activeSession();
+  const dist=sess?distOf(sess.id):0,remain=v.estRange?Math.max(v.estRange-dist,0):null,warn=v.estRange&&dist/v.estRange>=0.85;
+  let sub;
+  if(v.estRange){sub=(lang==='id'?'sisa ± <b>'+fmtKm(remain)+'</b> km dari '+fmtKm(v.estRange)+' km':'<b>'+fmtKm(remain)+'</b> km left of '+fmtKm(v.estRange)+' km');if(warn)sub+='<br><span style="color:var(--gold)">'+t(ev?'charge_soon':'fill_soon')+'</span>';}
+  else sub=sess?t('session_running'):t(ev?'hint_charge':'hint_fill');
+  const r=S.runningTrip;let ctrl;
+  if(r){
+    const tt=trTimes(r),paused=!!r.pausedSince;
+    let gps='';
+    if(S.settings.gps){if(r.gpsErr==='denied')gps='<div class="gps-err">'+t('gps_denied')+'</div>';else if(r.gpsErr==='na')gps='<div class="gps-err">'+t('gps_na')+'</div>';else gps='<div class="gps-line">◉ <span id="tGps">'+fmtKm(r.gpsKm||0)+'</span> km '+t('via_gps')+'</div>';}
+    const tollSum=(r.tolls||[]).reduce((a,x)=>a+(+x.amount||0),0);
+    const tollLine=tollSum>0?'<div class="gps-line" style="color:var(--gold)">'+I.toll+' '+fmtRp(tollSum)+' · '+(r.tolls.length)+'× '+t('toll').toLowerCase()+'</div>':'';
+    ctrl='<div class="card" style="margin-top:12px">'+
+      (paused?'<div style="text-align:center"><span class="paused-flag">'+I.pause+' '+t('stopped')+(r.waypoints.length?' '+t('at')+' '+esc(r.waypoints[r.waypoints.length-1].name||catLabel(r.waypoints[r.waypoints.length-1].cat)):'')+'</span></div>':'')+
+      '<div class="timer"><div class="lbl">'+t('drive_time')+'</div><div class="t mono" id="tMove" style="color:'+acc+'">'+fmtClock(tt.moving)+'</div>'+
+      '<div class="sub2">'+t('total')+' <b id="tTotal">'+fmtClock(tt.total)+'</b> · '+t('from')+' '+esc(r.startLocation||'—')+(r.rangeStart?' · '+t('s_range')+' <b>'+fmtKm(r.rangeStart)+'</b> '+(r.rangeUnit||'km'):'')+'</div>'+gps+tollLine+'</div>'+
+      '<div class="btn-row">'+(paused?'<button class="btn btn-go btn-sm" data-act="resume">'+I.play+' '+t('resume')+'</button>':'<button class="btn btn-warn btn-sm" data-act="pause">'+I.pin+' '+t('make_stop')+'</button>')+
+      '<button class="btn btn-ghost btn-sm" data-act="toll" style="color:var(--gold)">'+I.toll+' '+t('log_toll')+'</button></div>'+
+      '<button class="btn btn-stop btn-sm" style="margin-top:10px" data-act="end">'+I.stop+' '+t('finish')+'</button></div>';
+  }else{
+    ctrl='<div class="card" style="margin-top:12px"><button class="btn btn-go" data-act="start">'+I.play+' '+t('start_driving')+'</button>'+
+      '<div class="btn-row"><button class="btn btn-ghost btn-sm" data-act="fill">'+(ev?I.zap:I.fuel)+' '+t(ev?'log_charge':'log_fuel')+'</button></div></div>';
+  }
+  const ms=monthStats();const last=[...S.sessions].filter(s=>s.vehicleId===v.id).sort((a,b)=>b.startedAt-a.startedAt)[0];const ls=last?sessStats(last):null;
+  let effRow='';if(ls&&(ls.eff||ls.perKm))effRow='<div class="eff-row">'+(ls.eff?'<div class="eff"><div class="v">'+fmtKm(ls.eff)+'</div><div class="k">'+ls.unit+' '+t('last')+'</div></div>':'')+(ls.perKm?'<div class="eff"><div class="v">'+fmtRp(ls.perKm)+'</div><div class="k">'+t('cost_km')+'</div></div>':'')+'</div>';
+  const rem=vehReminders(v);let banner='';
+  if(rem.length){banner='<div class="card" data-act="edit-vehicle" data-id="'+v.id+'" style="margin-bottom:12px;border-color:var(--gold);background:#f2b4410d;cursor:pointer">'+
+    '<div style="display:flex;align-items:center;gap:8px;color:var(--gold);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:8px">'+I.bell+' '+t('rem_title')+'</div>'+
+    rem.map(r=>'<div style="display:flex;justify-content:space-between;align-items:center;font-size:13.5px;padding:3px 0"><span style="font-weight:600">'+t(r.k)+'</span><span class="mono" style="color:'+(r.over?'var(--danger)':'var(--gold)')+';font-size:12.5px">'+r.detail+'</span></div>').join('')+'</div>';}
+  const odo=currentOdo(v);
+  return banner+'<div class="card dial-card"><div class="tag">'+(sess?t(ev?'since_charge':'since_fill'):t('no_session'))+'</div>'+dial(dist,v.estRange,acc,sub)+
+    (sess&&sess.fillLocation?'<div class="fill-loc">'+(ev?I.zap:I.fuel)+' '+esc(sess.fillLocation)+'</div>':'')+'</div>'+ctrl+
+    '<div class="section-t">'+t('this_month')+'</div><div class="stats"><div class="stat"><div class="v mono">'+fmtKm(ms.km)+'</div><div class="k">'+t('km')+'</div></div>'+
+    '<div class="stat"><div class="v mono" style="font-size:15px">'+fmtRp(ms.cost)+'</div><div class="k">'+t('cost')+'</div></div>'+
+    '<div class="stat"><div class="v mono">'+ms.count+'</div><div class="k">'+t('trips')+'</div></div></div>'+effRow+
+    '<div style="text-align:center;color:var(--muted);font-size:11.5px;margin-top:12px" class="mono">'+t('odometer')+' '+fmtKm(odo)+' km</div>';
+}
+
+function viewSessions(){
+  const v=activeVehicle();if(!v)return '<div class="empty"><div class="ico">⛽</div><p>'+t('pick_vehicle')+'</p></div>';
+  const ev=isEV(v),list=S.sessions.filter(s=>s.vehicleId===v.id).sort((a,b)=>b.startedAt-a.startedAt);
+  let html='<button class="btn btn-go" style="margin-top:14px" data-act="fill">'+(ev?I.zap:I.fuel)+' '+t(ev?'new_charge':'new_fill')+'</button>';
+  if(!list.length)html+='<div class="empty"><div class="ico">🗺️</div><p>'+t('no_sessions')+'</p></div>';
+  list.forEach(s=>{
+    const st=sessStats(s),veh=vehicleById(s.vehicleId),evx=s.type==='ev',ac=evx?'var(--emerald)':'var(--leaf)';
+    const pct=veh&&veh.estRange?Math.min(st.dist/veh.estRange*100,100):(st.count?100:0),tr=tripsOf(s.id),dir=mDir(sessionPlaces(s));
+    let chips='';if(evx){if(s.kwh)chips+='<span class="chip">'+I.zap+' <b>'+fmtKm(s.kwh)+'</b> kWh</span>';if(s.percent)chips+='<span class="chip">🔋 <b>'+s.percent+'</b>%</span>';}else{if(s.liters)chips+='<span class="chip">'+I.fuel+' <b>'+fmtKm(s.liters)+'</b> L</span>';}
+    if(s.cost)chips+='<span class="chip">💵 <b>'+fmtRp(s.cost).replace('Rp ','')+'</b></span>';if(st.eff)chips+='<span class="chip">📊 <b>'+fmtKm(st.eff)+'</b> '+st.unit+'</span>';if(st.perKm)chips+='<span class="chip">➗ <b>'+fmtRp(st.perKm)+'</b>/km</span>';
+    let route='<div class="node"><div class="rail"><div class="marker start" style="border-color:'+ac+';color:'+ac+'">'+(evx?'⚡':'⛽')+'</div>'+(tr.length?'<div class="line"></div>':'')+'</div><div class="body"><div class="place"><a href="'+(s.fillLocation?mSearch(s.fillLocation):'#')+'" target="_blank" rel="noopener">'+esc(s.fillLocation||t(evx?'charge_point':'fill_point'))+'</a></div><div class="meta">'+fmtDate(s.startedAt)+'</div></div></div>';
+    tr.forEach((x,ti)=>{(x.waypoints||[]).forEach(w=>{const dur=w.resumedAt?w.resumedAt-w.at:0;route+='<div class="node"><div class="rail"><div class="marker stop">'+catEmoji(w.cat)+'</div><div class="line"></div></div><div class="body"><div class="place"><a href="'+mSearch(w.name||catLabel(w.cat))+'" target="_blank" rel="noopener">'+esc(w.name||catLabel(w.cat))+'</a></div><div class="meta">'+t('stopover')+' · '+catLabel(w.cat)+(dur?' · '+fmtDur(dur):'')+(w.note?' · '+esc(w.note):'')+'</div></div></div>';});
+      const isLast=ti===tr.length-1;route+='<div class="node"><div class="rail"><div class="marker'+(isLast?' dest':'')+'">'+I.pin+'</div>'+(isLast?'':'<div class="line"></div>')+'</div><div class="body"><div class="place"><a href="'+mSearch(x.endLocation||'')+'" target="_blank" rel="noopener">'+esc(x.endLocation||t('destination'))+'</a></div><div class="leg mono" style="color:'+ac+'">'+fmtKm(x.distanceKm)+' km · '+fmtDur(x.movingMs||(x.endedAt-x.startedAt))+(x.tollCost?' · '+t('toll').toLowerCase()+' '+fmtRp(x.tollCost):'')+'</div></div></div>';});
+    if(!tr.length)route+='<div style="font-size:12.5px;color:var(--muted);padding-left:39px">'+t('no_trips_sess')+'</div>';
+    html+='<div class="card" style="margin-top:14px"><div class="sess-head"><div><div class="sess-total mono" style="color:'+ac+'">'+fmtKm(st.dist)+' <small>km'+(veh&&veh.estRange?' / '+fmtKm(veh.estRange):'')+'</small></div>'+
+      '<div style="font-size:11.5px;color:var(--muted);margin-top:3px">'+(!s.closedAt?'<span class="open-tag" style="color:'+ac+'">● '+t('running')+'</span>':t('done')+' · '+fmtDur(st.time))+'</div></div>'+
+      '<div style="display:flex;gap:6px">'+(!s.closedAt&&st.count?'<button class="iconbtn" data-act="close-session" data-id="'+s.id+'">'+I.stop+'</button>':'')+'<button class="iconbtn" data-act="del-session" data-id="'+s.id+'">'+I.trash+'</button></div></div>'+
+      '<div class="bar"><i style="width:'+pct+'%;background:'+ac+'"></i></div>'+(chips?'<div class="chips">'+chips+'</div>':'')+'<div style="margin-top:16px">'+route+'</div>'+
+      (dir?'<a class="maplink" href="'+dir+'" target="_blank" rel="noopener">'+I.nav+' '+t('nav_route')+'</a>':'')+
+      '<button class="link-btn" style="margin-top:12px;display:block" data-act="toggle-map" data-id="'+s.id+'">'+t('show_map')+'</button><div id="map-'+s.id+'"></div></div>';
+  });
+  return html;
+}
+
+function viewHistory(){
+  const trips=[...S.trips].sort((a,b)=>b.startedAt-a.startedAt);
+  if(!trips.length)return '<div class="empty" style="margin-top:30px"><div class="ico">🧭</div><p>'+t('no_trips')+'</p></div>';
+  let html='';
+  trips.forEach(x=>{const veh=vehicleById(x.vehicleId),ev=veh&&veh.type==='ev',ac=ev?'var(--emerald)':'var(--leaf)';const mv=x.movingMs||(x.endedAt-x.startedAt),spd=mv>0?x.distanceKm/(mv/3600000):0,wpt=(x.waypoints||[]).length;
+    html+='<div class="card" style="margin-top:12px;padding:14px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="min-width:0"><div style="font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:6px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(x.startLocation||'—')+'</span>'+I.chev+'<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(x.endLocation||'—')+'</span></div>'+
+      '<div style="font-size:11.5px;color:var(--muted);margin-top:4px">'+(veh?esc(veh.brand+' '+veh.model):'')+' · '+fmtDate(x.startedAt)+(wpt?' · '+wpt+' '+t('stops'):'')+(x.purpose?' · '+esc(x.purpose):'')+(x.tollCost?' · '+I.toll+' '+fmtRp(x.tollCost):'')+'</div></div>'+
+      '<button class="iconbtn" data-act="del-trip" data-id="'+x.id+'">'+I.trash+'</button></div>'+
+      '<div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap"><span class="mono" style="font-size:16px;font-weight:700;color:'+ac+'">'+fmtKm(x.distanceKm)+' <span style="font-size:11px;color:var(--muted);font-weight:500">km</span></span>'+
+      '<span class="mono" style="font-size:16px;font-weight:700;display:flex;align-items:center;gap:5px">'+I.clock+fmtDur(mv)+'</span>'+(spd>0?'<span class="mono" style="font-size:16px;font-weight:700;color:var(--muted)">'+fmtKm(spd)+' <span style="font-size:11px;font-weight:500">'+t('kmh')+'</span></span>':'')+
+      ((x.rangeStart!=null&&x.rangeEnd!=null&&x.rangeStart>x.rangeEnd)?'<span class="mono" style="font-size:16px;font-weight:700;color:var(--gold)">−'+fmtKm(x.rangeStart-x.rangeEnd)+' <span style="font-size:11px;font-weight:500">'+(x.rangeUnit||'km')+' '+t('rangedrop')+'</span></span>':'')+'</div></div>';});
+  return html;
+}
+
+function viewStats(){
+  const v=activeVehicle();
+  if(!v)return '<div class="empty"><div class="ico">📊</div><p>'+t('pick_vehicle')+'</p></div>';
+  const ev=isEV(v),acc=accentOf(v);
+  const allKm=S.trips.reduce((a,x)=>a+(+x.distanceKm||0),0);
+  const allCost=S.sessions.reduce((a,s)=>a+(+s.cost||0),0)+S.trips.reduce((a,x)=>a+(+x.extraCost||0)+(+x.tollCost||0),0);
+  const allTime=S.trips.reduce((a,x)=>a+(x.movingMs||(x.endedAt-x.startedAt)),0);
+  const lifetime='<div class="section-t">'+t('st_lifetime')+'</div><div class="stats"><div class="stat"><div class="v mono">'+fmtKm(allKm)+'</div><div class="k">'+t('km')+'</div></div>'+
+    '<div class="stat"><div class="v mono" style="font-size:14px">'+fmtRp(allCost)+'</div><div class="k">'+t('cost')+'</div></div>'+
+    '<div class="stat"><div class="v mono">'+fmtDur(allTime)+'</div><div class="k">'+t('st_time')+'</div></div></div>';
+
+  const el=effList(v.id);const unit=ev?'km/kWh':'km/L';
+  const avgEff=el.length?el.reduce((a,o)=>a+o.st.eff,0)/el.length:null;
+  const best=el.length?Math.max(...el.map(o=>o.st.eff)):null;
+  const worst=el.length?Math.min(...el.map(o=>o.st.eff)):null;
+  const rr=realRange(v.id);
+
+  let cards='<div class="section-t">'+esc(v.brand+' '+v.model)+'</div>';
+  if(rr||avgEff){
+    cards+='<div class="card"><div style="display:flex;gap:12px">';
+    if(rr)cards+='<div style="flex:1"><div class="mono" style="font-size:24px;font-weight:700;color:'+acc+'">'+fmtKm(rr)+' <span style="font-size:12px;color:var(--muted)">km</span></div><div style="font-size:11px;color:var(--muted);margin-top:3px">'+t('st_realrange')+(v.estRange?' · '+t('st_claimed')+' '+fmtKm(v.estRange):'')+'</div><div style="font-size:10.5px;color:var(--muted)">'+t('st_realrange_sub')+'</div></div>';
+    if(avgEff)cards+='<div style="flex:1"><div class="mono" style="font-size:24px;font-weight:700;color:'+acc+'">'+fmtKm(avgEff)+'</div><div style="font-size:11px;color:var(--muted);margin-top:3px">'+t('st_avg_eff')+' ('+unit+')</div>'+(best?'<div style="font-size:10.5px;color:var(--muted)">'+t('st_best')+' '+fmtKm(best)+' · '+t('st_worst')+' '+fmtKm(worst)+'</div>':'')+'</div>';
+    cards+='</div></div>';
+  }
+  // real consumption from range-start/range-end logging
+  const rc=S.trips.filter(x=>x.vehicleId===v.id&&x.rangeStart!=null&&x.rangeEnd!=null&&x.rangeStart>x.rangeEnd&&(+x.distanceKm||0)>0);
+  if(rc.length){const drop=rc.reduce((a,x)=>a+(x.rangeStart-x.rangeEnd),0);const km=rc.reduce((a,x)=>a+(+x.distanceKm||0),0);const u=rc[0].rangeUnit||'km';
+    const ratio=km/drop; // km driven per 1 unit of range used
+    cards+='<div class="card" style="margin-top:12px"><div class="mono" style="font-size:24px;font-weight:700;color:'+acc+'">'+fmtKm(ratio)+' <span style="font-size:12px;color:var(--muted)">km / 1'+u+'</span></div><div style="font-size:11px;color:var(--muted);margin-top:3px">'+t('st_consumption')+' · '+fmtKm(km)+' km '+t('used_per')+' '+fmtKm(drop)+u+'</div><div style="font-size:10.5px;color:var(--muted)">'+t('st_consumption_sub')+'</div></div>';}
+
+  // efficiency trend (last 8 sessions with eff)
+  let trend='';
+  if(el.length){const data=el.slice(-8).map(o=>({label:new Date(o.s.startedAt).toLocaleDateString(loc(),{day:'numeric',month:'short'}),value:o.st.eff,color:acc}));
+    trend='<div class="section-t">'+t('st_eff_trend')+' ('+unit+')</div><div class="card">'+barChart(data,(x)=>fmtKm(x))+'</div>';}
+
+  // monthly cost (last 6 months)
+  const now=new Date();const months=[];
+  for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);const m=d.getMonth(),y=d.getFullYear();
+    const fuel=S.sessions.filter(s=>{const z=new Date(s.startedAt);return z.getMonth()===m&&z.getFullYear()===y;}).reduce((a,s)=>a+(+s.cost||0),0);
+    const extra=S.trips.filter(x=>{const z=new Date(x.startedAt);return z.getMonth()===m&&z.getFullYear()===y;}).reduce((a,x)=>a+(+x.extraCost||0)+(+x.tollCost||0),0);
+    months.push({label:d.toLocaleDateString(loc(),{month:'short'}),value:fuel+extra,color:'var(--leaf)'});}
+  let costc='';
+  if(months.some(m=>m.value>0))costc='<div class="section-t">'+t('st_month_cost')+'</div><div class="card">'+barChart(months,(x)=>x>=1000?Math.round(x/1000)+'k':Math.round(x))+'</div>';
+
+  if(!rr&&!avgEff&&!el.length&&allKm===0)return '<div style="margin-top:6px">'+lifetime+'</div><div class="empty"><div class="ico">📈</div><p>'+t('st_none')+'</p></div>';
+  return lifetime+cards+trend+costc;
+}
+
+function viewGarage(){
+  let html='<button class="btn btn-go" style="margin-top:14px" data-act="add-vehicle">'+I.plus+' '+t('add_vehicle')+'</button>';
+  if(!S.vehicles.length)html+='<div class="empty"><div class="ico">🚗</div><p>'+(lang==='id'?'Garasi masih kosong.':'Garage is empty.')+'</p></div>';
+  S.vehicles.forEach(v=>{const ev=v.type==='ev',on=v.id===S.activeVehicleId,ac=ev?'var(--emerald)':'var(--leaf)';const odo=currentOdo(v);const rem=vehReminders(v);
+    html+='<div class="card" style="margin-top:12px;padding:14px"><div class="vrow"><div class="ic" style="color:'+ac+'">'+vehAvatar(v,'24px')+'</div>'+
+      '<div class="info" data-act="set-active" data-id="'+v.id+'"><div class="n">'+esc(v.brand+' '+v.model)+(rem.length?' <span style="color:'+(rem.some(r=>r.over)?'var(--danger)':'var(--gold)')+'">●</span>':'')+'</div><div class="d">'+t(ev?'ev':'petrol')+(v.estRange?' · '+fmtKm(v.estRange)+' '+t(ev?'per_charge':'per_tank'):'')+' · '+t('odometer')+' '+fmtKm(odo)+' km</div></div>'+
+      '<div class="act">'+(on?'<span class="active-mark" style="border-color:'+ac+';color:'+ac+'">'+t('active')+'</span>':'<button class="iconbtn" data-act="set-active" data-id="'+v.id+'">'+I.nav+'</button>')+
+      '<button class="iconbtn" data-act="edit-vehicle" data-id="'+v.id+'">'+I.pencil+'</button><button class="iconbtn" data-act="del-vehicle" data-id="'+v.id+'">'+I.trash+'</button></div></div></div>';});
+  return html;
+}
+
+/* ===================== render ===================== */
+function render(){
+  const v=activeVehicle(),acc=accentOf(v);document.documentElement.style.setProperty('--accent',acc);
+  document.documentElement.lang=lang;
+  const tabs=[['home',t('home'),I.gauge],['sessions',t('sessions'),isEV(v)?I.zap:I.fuel],['stats',t('stats'),I.chart],['history',t('history'),I.route],['garage',t('garage'),I.car]];
+  let main=S.tab==='home'?viewHome():S.tab==='sessions'?viewSessions():S.tab==='stats'?viewStats():S.tab==='history'?viewHistory():viewGarage();
+  document.getElementById('root').innerHTML=
+    '<header><div class="brand"><div class="logo">🌿</div><div><h1>D-rive</h1><small>'+t('tagline')+'</small></div></div>'+
+    '<div class="hbtns">'+(v?'<div class="veh-pill" data-act="tab" data-tab="garage"><div class="av">'+vehAvatar(v,'14px')+'</div><span>'+esc(v.brand+' '+v.model)+'</span></div>':'')+'<div class="gear" data-act="settings">'+I.gear+'</div></div></header>'+
+    '<main>'+main+'</main>'+
+    '<nav>'+tabs.map(x=>'<button class="'+(S.tab===x[0]?'on':'')+'" data-act="tab" data-tab="'+x[0]+'">'+x[2]+x[1]+'</button>').join('')+'</nav>';
+  if(timerInt){clearInterval(timerInt);timerInt=null;}
+  if(S.runningTrip&&S.tab==='home'){timerInt=setInterval(()=>{const r=S.runningTrip;if(!r)return;const tt=trTimes(r);const em=document.getElementById('tMove'),et=document.getElementById('tTotal'),eg=document.getElementById('tGps');if(em&&!r.pausedSince)em.textContent=fmtClock(tt.moving);if(et)et.textContent=fmtClock(tt.total);if(eg)eg.textContent=fmtKm(r.gpsKm||0);},1000);}
+}
+function toggleMap(id){const box=document.getElementById('map-'+id);if(!box)return;if(box.dataset.open){box.innerHTML='';box.dataset.open='';return;}const s=S.sessions.find(x=>x.id===id);const p=sessionPlaces(s);const q=p[p.length-1]||p[0];if(!q){box.innerHTML='<div class="hint" style="margin:8px 0 0">'+t('no_map')+'</div>';box.dataset.open='1';return;}box.innerHTML='<div class="mapwrap"><iframe loading="lazy" src="'+mEmbed(q)+'"></iframe></div>';box.dataset.open='1';}
+
+/* ===================== modals ===================== */
+const mroot=()=>document.getElementById('modal-root');
+function closeModal(){mroot().innerHTML='';}
+function sheet(title,inner){mroot().innerHTML='<div class="overlay" data-close="1"><div class="sheet"><div class="sheet-h"><h3>'+title+'</h3><button class="iconbtn" data-close="1">'+I.x+'</button></div>'+inner+'</div></div>';}
+
+function modalVehicle(edit){
+  const cur=edit?vehicleById(edit):null;let type=cur?cur.type:'ev';let icon=cur&&cur.icon?cur.icon:'🚗';
+  sheet(cur?t('v_edit'):t('v_add'),
+    '<div class="field"><label>'+t('v_type')+'</label><div class="seg" id="mType"><button data-t="ev" class="'+(type==='ev'?'on-ev':'')+'">'+I.zap+' '+t('v_elec')+'</button><button data-t="ice" class="'+(type==='ice'?'on-ice':'')+'">'+I.fuel+' '+t('v_petrol')+'</button></div></div>'+
+    '<div class="row2"><div class="field"><label>'+t('v_brand')+'</label><input id="mBrand" value="'+esc(cur?cur.brand:'')+'" placeholder="Hyundai"></div><div class="field"><label>'+t('v_model')+'</label><input id="mModel" value="'+esc(cur?cur.model:'')+'" placeholder="Ioniq 5"></div></div>'+
+    '<div class="field mono"><label id="mRangeL">'+t(type==='ev'?'v_range_ev':'v_range_ice')+'</label><input id="mRange" inputmode="decimal" value="'+(cur&&cur.estRange?cur.estRange:'')+'" placeholder="'+(type==='ev'?'400':'500')+'"></div>'+
+    '<div class="field"><label>'+t('v_icon')+'</label><div class="iconpick" id="mIcons">'+CAR_EMOJI.map(e=>'<button data-e="'+e+'" class="'+(e===icon?'on':'')+'">'+e+'</button>').join('')+'</div></div>'+
+    '<div class="field"><label>'+t('v_img')+'</label><input id="mImg" value="'+esc(cur&&cur.img?cur.img:'')+'" placeholder="https://...jpg"></div><p class="hint">'+t('v_img_hint')+'</p>'+
+    '<div class="section-t" style="margin:6px 4px 10px">'+t('v_more')+'</div>'+
+    '<div class="row2"><div class="field mono"><label>'+t('v_odo')+'</label><input id="mOdo" inputmode="decimal" value="'+(cur&&cur.odoBase?cur.odoBase:'')+'" placeholder="0"></div><div class="field mono"><label>'+t('v_service_km')+'</label><input id="mSvcKm" inputmode="decimal" value="'+(cur&&cur.serviceKm?cur.serviceKm:'')+'" placeholder="10000"></div></div>'+
+    '<div class="field"><label>'+t('v_service_date')+'</label><input id="mSvcDate" type="date" value="'+(cur&&cur.serviceDate?cur.serviceDate:'')+'"></div>'+
+    '<div class="field"><label>'+t('v_tax_date')+'</label><input id="mTaxDate" type="date" value="'+(cur&&cur.taxDate?cur.taxDate:'')+'"></div>'+
+    '<button class="btn btn-go" id="mSave">'+t('save')+'</button>');
+  const tb=document.querySelectorAll('#mType button');tb.forEach(b=>b.onclick=()=>{type=b.dataset.t;tb.forEach(x=>x.className=x.dataset.t==='ev'?(type==='ev'?'on-ev':''):(type==='ice'?'on-ice':''));document.getElementById('mRangeL').textContent=t(type==='ev'?'v_range_ev':'v_range_ice');});
+  document.querySelectorAll('#mIcons button').forEach(b=>b.onclick=()=>{icon=b.dataset.e;document.querySelectorAll('#mIcons button').forEach(x=>x.classList.toggle('on',x.dataset.e===icon));});
+  document.getElementById('mSave').onclick=()=>{const brand=document.getElementById('mBrand').value.trim(),model=document.getElementById('mModel').value.trim();if(!brand&&!model)return;const obj={type,brand,model,estRange:num(document.getElementById('mRange').value)||null,icon,img:document.getElementById('mImg').value.trim()||null,odoBase:num(document.getElementById('mOdo').value)||null,serviceKm:num(document.getElementById('mSvcKm').value)||null,serviceDate:document.getElementById('mSvcDate').value||null,taxDate:document.getElementById('mTaxDate').value||null};if(cur)Object.assign(cur,obj);else{const nv=Object.assign({id:uid()},obj);S.vehicles.push(nv);if(!S.activeVehicleId)S.activeVehicleId=nv.id;}save();closeModal();render();};
+}
+function modalFill(){
+  const v=activeVehicle();if(!v)return;const ev=v.type==='ev';
+  sheet(t(ev?'f_charge':'f_fill'),
+    '<div class="field"><label>'+t('f_date')+'</label><input id="fDate" type="datetime-local" value="'+nowLocalInput()+'"></div>'+
+    '<div class="field"><label>'+t('f_loc')+'</label><input id="fLoc" list="dlp" placeholder="'+(ev?'SPKLU Senayan City':'SPBU Shell Antasari')+'">'+datalist('dlp')+'</div>'+
+    (ev?'<div class="row2"><div class="field mono"><label>'+t('f_kwh')+'</label><input id="fKwh" inputmode="decimal" placeholder="32"></div><div class="field mono"><label>'+t('f_pct')+'</label><input id="fPct" inputmode="decimal" placeholder="80"></div></div>':'<div class="field mono"><label>'+t('f_liter')+'</label><input id="fLit" inputmode="decimal" placeholder="40"></div>')+
+    '<div class="field mono"><label>'+t('f_cost')+'</label><input id="fCost" inputmode="numeric" placeholder="'+(ev?'80000':'500000')+'"></div><p class="hint">'+t(ev?'f_hint_ev':'f_hint_ice')+'</p><button class="btn btn-go" id="fSave">'+t('f_start')+'</button>');
+  document.getElementById('fSave').onclick=()=>{const dv=document.getElementById('fDate').value;const when=dv?new Date(dv).getTime():Date.now();const open=S.sessions.find(s=>s.vehicleId===v.id&&!s.closedAt);if(open)open.closedAt=Math.min(when,Date.now())>open.startedAt?when:Date.now();const ns={id:uid(),vehicleId:v.id,type:v.type,fillLocation:document.getElementById('fLoc').value.trim(),startedAt:when,closedAt:null,kwh:ev?num(document.getElementById('fKwh').value)||null:null,percent:ev?num(document.getElementById('fPct').value)||null:null,liters:!ev?num(document.getElementById('fLit').value)||null:null,cost:num(document.getElementById('fCost').value)||null};S.sessions.push(ns);save();closeModal();S.tab='sessions';render();};
+}
+function modalStart(){
+  const v=activeVehicle();if(!v)return;const sess=activeSession();let def='';if(sess){const lt=tripsOf(sess.id).slice(-1)[0];def=lt?lt.endLocation:sess.fillLocation||'';}
+  const ev=v.type==='ev',rUnit=ev?'%':'km';
+  sheet(t('s_title'),'<div class="field"><label>'+t('s_from')+'</label><input id="sLoc" list="dlp" value="'+esc(def)+'" placeholder="Rumah">'+datalist('dlp')+'</div>'+
+    '<div class="field mono"><label>'+t('s_range')+' ('+rUnit+')</label><input id="sRange" inputmode="decimal" placeholder="'+(ev?'72':(v.estRange?Math.round(v.estRange*0.6):'280'))+'"></div>'+
+    '<p class="hint">'+t('s_range_hint')+'</p><p class="hint" style="margin-top:-8px">'+t('s_hint')+'</p><button class="btn btn-go" id="sSave">'+I.play+' '+t('s_go')+'</button>');
+  document.getElementById('sSave').onclick=()=>{let sid=S.sessions.find(s=>s.vehicleId===v.id&&!s.closedAt)?.id;const lc=document.getElementById('sLoc').value.trim();if(!sid){sid=uid();S.sessions.push({id:sid,vehicleId:v.id,type:v.type,fillLocation:lc,startedAt:Date.now(),closedAt:null,cost:null,kwh:null,percent:null,liters:null,auto:true});}S.runningTrip={sessionId:sid,vehicleId:v.id,startLocation:lc,startedAt:Date.now(),pausedMs:0,pausedSince:null,waypoints:[],gpsKm:0,tolls:[],rangeStart:num(document.getElementById('sRange').value),rangeUnit:rUnit};save();closeModal();S.tab='home';render();if(S.settings.gps)startGps();};
+}
+function modalPause(){
+  let cat='other';
+  sheet(t('mp_title'),
+    '<div class="field"><label>'+t('mp_where')+'</label><input id="pLoc" list="dlp" placeholder="Rest area KM 57" autofocus>'+datalist('dlp')+'</div>'+
+    '<div class="field"><label>'+t('mp_type')+'</label><div class="catpick" id="pCat">'+CATS.map(c=>'<button data-c="'+c[0]+'" class="'+(c[0]===cat?'on':'')+'"><span class="e">'+c[1]+'</span>'+(lang==='id'?c[2]:c[3])+'</button>').join('')+'</div></div>'+
+    '<div class="field"><label>'+t('mp_note')+'</label><input id="pNote" placeholder=""></div><p class="hint">'+t('mp_hint')+'</p><button class="btn btn-warn" id="pSave">'+I.pin+' '+t('mp_btn')+'</button>');
+  document.querySelectorAll('#pCat button').forEach(b=>b.onclick=()=>{cat=b.dataset.c;document.querySelectorAll('#pCat button').forEach(x=>x.classList.toggle('on',x.dataset.c===cat));});
+  document.getElementById('pSave').onclick=()=>{const r=S.runningTrip;if(!r||r.pausedSince)return closeModal();r.pausedSince=Date.now();r._last=null;r.waypoints.push({name:document.getElementById('pLoc').value.trim(),cat,note:document.getElementById('pNote').value.trim(),at:Date.now(),resumedAt:null});save();closeModal();render();};
+}
+function modalToll(){
+  const r=S.runningTrip;if(!r)return;if(!r.tolls)r.tolls=[];
+  const listHtml=r.tolls.length?'<div class="chips" style="margin:-4px 0 14px">'+r.tolls.map((x,i)=>'<span class="chip" data-act="del-toll" data-i="'+i+'" style="cursor:pointer;color:var(--gold)">'+I.toll+' '+esc(x.name||t('toll'))+' <b>'+fmtRp(x.amount).replace('Rp ','')+'</b> '+I.x+'</span>').join('')+'</div>':'';
+  sheet(t('log_toll'),listHtml+
+    '<div class="field"><label>'+t('toll_gate')+'</label><input id="tGate" list="dlp" placeholder="GT Cibubur 2">'+datalist('dlp')+'</div>'+
+    '<div class="field mono"><label>'+t('toll_amount')+'</label><input id="tAmt" inputmode="numeric" placeholder="15000" autofocus></div>'+
+    '<p class="hint">'+t('toll_hint')+'</p><button class="btn btn-warn" id="tSave">'+I.toll+' '+t('toll_save')+'</button>');
+  document.getElementById('tSave').onclick=()=>{const amt=num(document.getElementById('tAmt').value);if(!(amt>0)){alert(t('no_amount'));return;}r.tolls.push({name:document.getElementById('tGate').value.trim(),amount:amt,at:Date.now()});save();closeModal();render();};
+}
+function modalEnd(){
+  const r=S.runningTrip;if(!r)return;const tt=trTimes(r);const gk=r.gpsKm?Math.round(r.gpsKm*10)/10:'';const rUnit=r.rangeUnit||'km';const tollSum=(r.tolls||[]).reduce((a,x)=>a+(+x.amount||0),0);
+  sheet(t('e_title'),
+    '<p class="hint" style="margin-top:0">'+t('drive_time')+': <b class="mono" style="color:var(--text)">'+fmtDur(tt.moving)+'</b> · '+t('total')+' '+fmtDur(tt.total)+(r.waypoints.length?' · '+r.waypoints.length+' '+t('stops'):'')+'</p>'+
+    '<div class="field"><label>'+t('e_dest')+'</label><input id="eLoc" list="dlp" placeholder="Kantor">'+datalist('dlp')+'</div>'+
+    '<div class="row2"><div class="field mono"><label>'+t('e_dist')+'</label><input id="eDist" inputmode="decimal" value="'+gk+'" placeholder="12,4"></div>'+
+    '<div class="field"><label>'+t('e_purpose')+'</label><select id="ePur"><option value="">—</option><option>'+t('pur_personal')+'</option><option>'+t('pur_work')+'</option><option>'+t('pur_kos')+'</option></select></div></div>'+
+    (gk?'<p class="hint" style="margin-top:-2px">'+t('e_gps')+'</p>':'')+
+    (r.rangeStart?'<div class="field mono"><label>'+t('e_range')+' ('+rUnit+') — '+t('s_range').toLowerCase()+' '+fmtKm(r.rangeStart)+'</label><input id="eRange" inputmode="decimal" placeholder="'+Math.max(0,Math.round(r.rangeStart*0.7))+'"></div>':'')+
+    '<div class="row2"><div class="field mono"><label>'+t('e_toll')+'</label><input id="eToll" inputmode="numeric" value="'+(tollSum||'')+'"></div>'+
+    '<div class="field mono"><label>'+t('e_extra')+'</label><input id="eExtra" inputmode="numeric" placeholder="0"></div></div>'+
+    '<button class="btn btn-go" id="eSave">'+I.stop+' '+t('e_save')+'</button>');
+  document.getElementById('eSave').onclick=()=>{const d=num(document.getElementById('eDist').value);if(!(d>=0))return;const rr=S.runningTrip,end=Date.now();let pausedMs=rr.pausedMs||0;if(rr.pausedSince){pausedMs+=end-rr.pausedSince;const w=rr.waypoints[rr.waypoints.length-1];if(w&&!w.resumedAt)w.resumedAt=end;}const movingMs=(end-rr.startedAt)-pausedMs;const re=document.getElementById('eRange');S.trips.push({id:uid(),sessionId:rr.sessionId,vehicleId:rr.vehicleId,startLocation:rr.startLocation,endLocation:document.getElementById('eLoc').value.trim(),startedAt:rr.startedAt,endedAt:end,distanceKm:d,movingMs,pausedMs,waypoints:rr.waypoints||[],tolls:rr.tolls||[],tollCost:num(document.getElementById('eToll').value)||null,purpose:document.getElementById('ePur').value||null,extraCost:num(document.getElementById('eExtra').value)||null,rangeStart:rr.rangeStart||null,rangeEnd:re?(num(re.value)):null,rangeUnit:rr.rangeUnit||null});stopGps();S.runningTrip=null;save();closeModal();S.tab='sessions';render();};
+}
+function modalSettings(){
+  const nV=S.vehicles.length,nT=S.trips.length,nS=S.sessions.length;
+  sheet(t('set_title'),
+    '<div class="chips" style="margin:0 0 16px"><span class="chip">🚗 <b>'+nV+'</b> '+t('cars')+'</span><span class="chip">'+I.route+' <b>'+nT+'</b> '+t('trips')+'</span><span class="chip">⛽ <b>'+nS+'</b> '+t('sessions').toLowerCase()+'</span></div>'+
+    '<div class="field"><label>'+t('set_lang')+'</label><div class="seg" id="sLang"><button data-l="id" class="'+(lang==='id'?'on':'')+'">🇮🇩 Indonesia</button><button data-l="en" class="'+(lang==='en'?'on':'')+'">🇬🇧 English</button></div></div>'+
+    '<div class="field"><label>'+t('set_gps')+'</label><div class="seg" id="sGps"><button data-g="1" class="'+(S.settings.gps?'on':'')+'">'+I.nav+' '+(lang==='id'?'Nyala':'On')+'</button><button data-g="0" class="'+(!S.settings.gps?'on':'')+'">'+(lang==='id'?'Mati':'Off')+'</button></div><p class="hint" style="margin-top:8px">'+t('set_gps_hint')+'</p></div>'+
+    '<button class="btn btn-ghost btn-sm" style="margin-bottom:10px" data-act="export-csv">⬇ '+t('set_csv')+'</button>'+
+    '<button class="btn btn-ghost btn-sm" style="margin-bottom:10px" data-act="export-json">💾 '+t('set_backup')+'</button>'+
+    '<button class="btn btn-ghost btn-sm" style="margin-bottom:16px" data-act="import-json">📂 '+t('set_restore')+'</button>'+
+    '<button class="btn btn-stop btn-sm" data-act="wipe">'+t('set_wipe')+'</button><p class="hint" style="margin-top:14px">'+t('set_hint')+'</p>');
+  document.querySelectorAll('#sLang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;S.settings.lang=lang;save();closeModal();render();modalSettings();});
+  document.querySelectorAll('#sGps button').forEach(b=>b.onclick=()=>{const on=b.dataset.g==='1';S.settings.gps=on;save();if(on&&S.runningTrip)startGps();if(!on)stopGps();closeModal();render();modalSettings();});
+}
+
+/* ===================== export / import ===================== */
+function download(name,text,type){const b=new Blob([text],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+function exportCSV(){const rows=[['date','vehicle','type','from','to','distance_km','drive_min','total_min','stops','purpose','toll_rp','parking_rp','fill_location']];S.trips.slice().sort((a,b)=>a.startedAt-b.startedAt).forEach(x=>{const v=vehicleById(x.vehicleId),s=S.sessions.find(z=>z.id===x.sessionId),mv=x.movingMs||(x.endedAt-x.startedAt);rows.push([new Date(x.startedAt).toLocaleString('id-ID'),v?v.brand+' '+v.model:'',v?v.type:'',x.startLocation||'',x.endLocation||'',(+x.distanceKm||0),Math.round(mv/60000),Math.round((x.endedAt-x.startedAt)/60000),(x.waypoints||[]).length,x.purpose||'',(+x.tollCost||0),(+x.extraCost||0),s?s.fillLocation||'':'']);});const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');download('d-rive-trips.csv','\ufeff'+csv,'text/csv');}
+function exportJSON(){download('d-rive-backup.json',JSON.stringify({vehicles:S.vehicles,sessions:S.sessions,trips:S.trips,activeVehicleId:S.activeVehicleId,settings:S.settings},null,2),'application/json');}
+function importJSON(){const inp=document.createElement('input');inp.type='file';inp.accept='.json,application/json';inp.onchange=()=>{const f=inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d.vehicles)S.vehicles=d.vehicles;if(d.sessions)S.sessions=d.sessions;if(d.trips)S.trips=d.trips;if(d.activeVehicleId)S.activeVehicleId=d.activeVehicleId;if(d.settings){S.settings=d.settings;lang=S.settings.lang||lang;}S.runningTrip=null;save();closeModal();render();alert(t('restored'));}catch(e){alert(t('invalid'));}};rd.readAsText(f);};inp.click();}
+
+/* ===================== actions ===================== */
+document.addEventListener('click',(e)=>{
+  const cl=e.target.closest('[data-close]');if(cl){if(cl.classList.contains('overlay')&&e.target!==cl)return;closeModal();return;}
+  const el=e.target.closest('[data-act]');if(!el)return;const act=el.dataset.act,id=el.dataset.id;
+  if(act==='tab'){S.tab=el.dataset.tab;render();}
+  else if(act==='add-vehicle')modalVehicle(null);
+  else if(act==='edit-vehicle')modalVehicle(id);
+  else if(act==='set-active'){S.activeVehicleId=id;save();render();}
+  else if(act==='del-vehicle'){if(confirm(t('c_del_v'))){const sids=S.sessions.filter(s=>s.vehicleId===id).map(s=>s.id);S.vehicles=S.vehicles.filter(v=>v.id!==id);S.sessions=S.sessions.filter(s=>s.vehicleId!==id);S.trips=S.trips.filter(x=>!sids.includes(x.sessionId));if(S.activeVehicleId===id)S.activeVehicleId=S.vehicles[0]?.id||null;if(S.runningTrip&&S.runningTrip.vehicleId===id){stopGps();S.runningTrip=null;}save();render();}}
+  else if(act==='fill')modalFill();
+  else if(act==='start')modalStart();
+  else if(act==='pause')modalPause();
+  else if(act==='toll')modalToll();
+  else if(act==='del-toll'){const r=S.runningTrip;if(r&&r.tolls){r.tolls.splice(+el.dataset.i,1);save();modalToll();}}
+  else if(act==='resume'){const r=S.runningTrip;if(r&&r.pausedSince){r.pausedMs=(r.pausedMs||0)+(Date.now()-r.pausedSince);const w=r.waypoints[r.waypoints.length-1];if(w&&!w.resumedAt)w.resumedAt=Date.now();r.pausedSince=null;r._last=null;save();render();}}
+  else if(act==='end')modalEnd();
+  else if(act==='del-trip'){S.trips=S.trips.filter(x=>x.id!==id);save();render();}
+  else if(act==='close-session'){const s=S.sessions.find(z=>z.id===id);if(s){s.closedAt=Date.now();save();render();}}
+  else if(act==='del-session'){if(confirm(t('c_del_s'))){S.sessions=S.sessions.filter(s=>s.id!==id);S.trips=S.trips.filter(x=>x.sessionId!==id);save();render();}}
+  else if(act==='toggle-map')toggleMap(id);
+  else if(act==='settings')modalSettings();
+  else if(act==='export-csv')exportCSV();
+  else if(act==='export-json')exportJSON();
+  else if(act==='import-json')importJSON();
+  else if(act==='wipe'){if(confirm(t('c_wipe'))){stopGps();S={vehicles:[],sessions:[],trips:[],activeVehicleId:null,runningTrip:null,tab:'home',settings:{gps:false,lang:lang}};save();closeModal();render();}}
+});
+
+if('serviceWorker' in navigator && location.protocol==='https:'){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+load();render();
+if(S.runningTrip&&S.settings.gps)startGps();
+</script>
+</body>
+</html>

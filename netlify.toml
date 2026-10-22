@@ -1,0 +1,17 @@
+# D-rive — Netlify config
+# Static site, no build step. Publishes the repo root as-is.
+
+[build]
+  publish = "."
+  command = ""
+
+# Service worker must never be cached, so updates ship immediately.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
